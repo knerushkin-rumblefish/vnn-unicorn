@@ -1,0 +1,58 @@
+
+./riscv-from-scratch/a.out:     file format elf64-littleriscv
+
+
+Disassembly of section .init:
+
+0000000080000000 <_start>:
+    80000000:	00002197          	auipc	gp,0x2
+    80000004:	8cc18193          	addi	gp,gp,-1844 # 800018cc <__global_pointer$>
+    80000008:	08000117          	auipc	sp,0x8000
+    8000000c:	ff810113          	addi	sp,sp,-8 # 88000000 <__stack_top>
+    80000010:	00010433          	add	s0,sp,zero
+    80000014:	0040006f          	j	80000018 <main>
+
+Disassembly of section .text:
+
+0000000080000018 <main>:
+    80000018:	7139                	addi	sp,sp,-64
+    8000001a:	fc22                	sd	s0,56(sp)
+    8000001c:	0080                	addi	s0,sp,64
+    8000001e:	080007b7          	lui	a5,0x8000
+    80000022:	0cc78793          	addi	a5,a5,204 # 80000cc <_start-0x77ffff34>
+    80000026:	fcf43823          	sd	a5,-48(s0)
+    8000002a:	080007b7          	lui	a5,0x8000
+    8000002e:	0ec78793          	addi	a5,a5,236 # 80000ec <_start-0x77ffff14>
+    80000032:	fef43423          	sd	a5,-24(s0)
+    80000036:	fd043783          	ld	a5,-48(s0)
+    8000003a:	639c                	ld	a5,0(a5)
+    8000003c:	fcf43423          	sd	a5,-56(s0)
+    80000040:	fe043023          	sd	zero,-32(s0)
+    80000044:	fc043c23          	sd	zero,-40(s0)
+    80000048:	a025                	j	80000070 <main+0x58>
+    8000004a:	fe843783          	ld	a5,-24(s0)
+    8000004e:	0791                	addi	a5,a5,4
+    80000050:	fef43423          	sd	a5,-24(s0)
+    80000054:	fe843783          	ld	a5,-24(s0)
+    80000058:	439c                	lw	a5,0(a5)
+    8000005a:	873e                	mv	a4,a5
+    8000005c:	fe043783          	ld	a5,-32(s0)
+    80000060:	97ba                	add	a5,a5,a4
+    80000062:	fef43023          	sd	a5,-32(s0)
+    80000066:	fd843783          	ld	a5,-40(s0)
+    8000006a:	0785                	addi	a5,a5,1
+    8000006c:	fcf43c23          	sd	a5,-40(s0)
+    80000070:	fd843703          	ld	a4,-40(s0)
+    80000074:	fc843783          	ld	a5,-56(s0)
+    80000078:	fcf749e3          	blt	a4,a5,8000004a <main+0x32>
+    8000007c:	480007b7          	lui	a5,0x48000
+    80000080:	0cc78793          	addi	a5,a5,204 # 480000cc <_start-0x37ffff34>
+    80000084:	fcf43023          	sd	a5,-64(s0)
+    80000088:	fc043783          	ld	a5,-64(s0)
+    8000008c:	fe043703          	ld	a4,-32(s0)
+    80000090:	e398                	sd	a4,0(a5)
+    80000092:	4781                	li	a5,0
+    80000094:	853e                	mv	a0,a5
+    80000096:	7462                	ld	s0,56(sp)
+    80000098:	6121                	addi	sp,sp,64
+    8000009a:	8082                	ret
