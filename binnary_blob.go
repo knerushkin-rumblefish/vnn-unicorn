@@ -7,7 +7,7 @@ import (
 )
 
 func create_binary_blob() {
-	size := 4 * 1024 * 1024 // 16GB
+	size := 4 * 1024 //* 1024 // 16GB
 
 	file, err := os.Create("blob.bin")
 	if err != nil {

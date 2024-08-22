@@ -115,7 +115,7 @@ func main() {
 
 	INPUT_PATH := "./blob.bin"
 	// PROGRAM_PATH := "./program/startup/infinite.bin"
-	PROGRAM_PATH := "./riscv-from-scratch/risc64-in-c.bin"
+	PROGRAM_PATH := "./riscv/risc64-in-c.bin"
 	// PROGRAM_PATH := "./program/program.bin"
 
 	input_len := FileLength(INPUT_PATH)
