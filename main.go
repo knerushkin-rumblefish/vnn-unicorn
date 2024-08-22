@@ -112,6 +112,7 @@ func pad(b []byte, blocksize int) ([]byte, error) {
 }
 func main() {
 	create_binary_blob()
+
 	INPUT_PATH := "./blob.bin"
 	// PROGRAM_PATH := "./program/startup/infinite.bin"
 	PROGRAM_PATH := "./riscv-from-scratch/risc64-in-c.bin"
@@ -124,16 +125,28 @@ func main() {
 	program_len := FileLength(PROGRAM_PATH)
 	fmt.Println("program length: ", program_len)
 
-	PROGRAM_SLOT := uint64(0x10000)
 	ADDRESS_START := uint64(0x8000000)
-	ADDRESS_END := uint64(32 * 1024 * 1024 * 1024)
 	fmt.Printf("Start Address: 0x%x\n", ADDRESS_START)
 
-	INPUT_ADDRESS_OFFSET := uint64(0x40000000)
-	// OUTPUT_ADDRESS_OFFSET := uint64(0x2000000)
-	INPUT_ADDRESS := ADDRESS_START + PROGRAM_SLOT
-	OUTPUT_ADDRESS := INPUT_ADDRESS + INPUT_ADDRESS_OFFSET
-	fmt.Printf("Input Address: 0x%x\n", INPUT_ADDRESS)
+	// PROGRAM_SLOT := uint64(0x10000)
+	// PROGRAM_ADDRESS := uint64(0x1000000)
+
+	OUTPUT_SLOT := uint64(0x100000)
+	// OUTPUT_ADDRESS := INPUT_ADDRESS + INPUT_ADDRESS_SLOT + INPUT_SLOT
+	OUTPUT_ADDRESS := uint64(0x40000000)
+
+	INPUT_SLOT := uint64(0x40000000)
+	// INPUT_ADDRESS_SLOT := uint64(8)
+	// // INPUT_ADDRESS := ADDRESS_START + PROGRAM_SLOT
+	// INPUT_ADDRESS := uint64(0x40000000) + PROGRAM_SLOT
+	INPUT_LENGTH_ADDRESS := OUTPUT_ADDRESS + OUTPUT_SLOT
+	INPUT_DATA_ADDRESS := INPUT_LENGTH_ADDRESS + 8
+
+	// ADDRESS_END := OUTPUT_ADDRESS + OUTPUT_SLOT + uint64(0x1000000)
+	ADDRESS_END := INPUT_DATA_ADDRESS + INPUT_SLOT
+	fmt.Printf("End Address: 0x%x\n", ADDRESS_END)
+
+	fmt.Printf("Input Address: 0x%x\n", INPUT_DATA_ADDRESS)
 	fmt.Printf("Output Address: 0x%x\n", OUTPUT_ADDRESS)
 	// isa, _ := rvda.New(32, rvda.RV64gc)
 	mu, _ := uc.NewUnicorn(uc.ARCH_RISCV, uc.MODE_RISCV64)
@@ -181,19 +194,26 @@ func main() {
 	// fmt.Println(mu)
 
 	// mu.HookAdd(uc.HOOK_MEM_READ, func(mu uc.Unicorn, access int, addr uint64, size int, value int64) {
-	// 	fmt.Printf("mem read: @0x%x, 0x%x = 0x%x\n", addr, size, value)
+	// 	if value != 0 {
+	// 		// 	// addr > INPUT_ADDRESS &&
+	// 		// 	// 	addr < INPUT_ADDRESS+INPUT_ADDRESS_SLOT
+	// 		// 	// {
+	// 		//
+	// 		fmt.Printf("0x%x 0x%x  0x%x\n", INPUT_ADDRESS, addr, INPUT_ADDRESS+INPUT_ADDRESS_SLOT)
+	// 		fmt.Printf("mem read: @0x%x, 0x%x = 0x%x\n", addr, size, value)
+	// 	}
 	//
-	// }, 0, OUTPUT_ADDRESS+OUTPUT_ADDRESS_OFFSET)
+	// }, 0, ADDRESS_END)
 	// mu.HookAdd(uc.HOOK_MEM_WRITE, func(mu uc.Unicorn, access int, addr uint64, size int, value int64) {
 	// 	fmt.Printf("mem write: @0x%x, 0x%x = 0x%x\n", addr, size, value)
-	// }, 0, OUTPUT_ADDRESS+OUTPUT_ADDRESS_OFFSET)
+	// }, 0, ADDRESS_END)
 
-	mu.MemMap(0, ADDRESS_END)
+	mu.MemMap(0, uint64(32*1024*1024*1024))
 
 	mu.MemWrite(OUTPUT_ADDRESS, Int64ToBytes(0))
 
-	mu.MemWrite(INPUT_ADDRESS, Int64ToBytes(input_len))
-	LoadBigFile(mu, INPUT_PATH, INPUT_ADDRESS+4)
+	mu.MemWrite(INPUT_LENGTH_ADDRESS, Int64ToBytes(input_len))
+	LoadBigFile(mu, INPUT_PATH, INPUT_DATA_ADDRESS)
 	// LoadFile(mu, INPUT_PATH, INPUT_ADDRESS+4)
 
 	LoadFile(mu, PROGRAM_PATH, ADDRESS_START)
@@ -202,7 +222,7 @@ func main() {
 		panic(err)
 	}
 
-	input_value_bytes, _ := mu.MemRead(INPUT_ADDRESS, 8)
+	input_value_bytes, _ := mu.MemRead(INPUT_LENGTH_ADDRESS, 8)
 	input_value := BytesToInt64(input_value_bytes)
 	fmt.Println("Input value: ", input_value)
 
