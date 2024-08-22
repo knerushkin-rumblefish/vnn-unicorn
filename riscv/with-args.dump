@@ -1,0 +1,33 @@
+
+a.out:     file format elf64-littleriscv
+
+
+Disassembly of section .init:
+
+0000000080000000 <_start>:
+    80000000:	00002197          	auipc	gp,0x2
+    80000004:	87418193          	addi	gp,gp,-1932 # 80001874 <__global_pointer$>
+    80000008:	08000117          	auipc	sp,0x8000
+    8000000c:	ff810113          	addi	sp,sp,-8 # 88000000 <__stack_top>
+    80000010:	00010433          	add	s0,sp,zero
+    80000014:	0040006f          	j	80000018 <main>
+
+Disassembly of section .text:
+
+0000000080000018 <main>:
+    80000018:	7179                	addi	sp,sp,-48
+    8000001a:	f422                	sd	s0,40(sp)
+    8000001c:	1800                	addi	s0,sp,48
+    8000001e:	87aa                	mv	a5,a0
+    80000020:	fcb43823          	sd	a1,-48(s0)
+    80000024:	fcf42e23          	sw	a5,-36(s0)
+    80000028:	4791                	li	a5,4
+    8000002a:	fef42623          	sw	a5,-20(s0)
+    8000002e:	47b1                	li	a5,12
+    80000030:	fef42423          	sw	a5,-24(s0)
+    80000034:	fec42783          	lw	a5,-20(s0)
+    80000038:	873e                	mv	a4,a5
+    8000003a:	fe842783          	lw	a5,-24(s0)
+    8000003e:	9fb9                	addw	a5,a5,a4
+    80000040:	fef42223          	sw	a5,-28(s0)
+    80000044:	bfc5                	j	80000034 <main+0x1c>
